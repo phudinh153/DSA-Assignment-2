@@ -18,6 +18,7 @@ class ReplacementPolicy {
     public:
     
     int *ch = new int[size];    //count for heap
+    
     Elem **heap = new Elem*[size];
     virtual ~ReplacementPolicy() = default;
     virtual void DeleteHeap(int pos) = 0;
@@ -44,7 +45,15 @@ class MFU : public ReplacementPolicy {
 
 class LFU : public ReplacementPolicy {
     public:
-
+    LFU(){
+        for(int i = 0; i < size; i++){
+        ch[i] = 0;
+    }
+    }
+    ~LFU(){
+        delete[] heap;
+        delete ch;    
+    }
 void ReHeapup(int pos){
     int posParent = (pos - 1) / 2;
     //cout << "posParent: " << posParent<<endl;

@@ -11,6 +11,13 @@ Data* Cache::read(int addr) {
     for(int i = 0; i < count; i++){
             if(rp->heap[i]->addr == addr){
                 rp->ch[i] += 1;   
+                for(int m = 0; m < count; m++){
+                    cout<<m<<" " << rp->heap[m]->data->getValue() <<" ";
+                }
+                cout <<endl;
+                for(int k = 0; k < count; k++){
+                    cout<<k<<" " << rp->ch[k] <<" ";
+                }
                 int j;
                 for(j = 0; j < count; j++){
                     if(s_engine->a[j]->addr == addr){
@@ -20,13 +27,16 @@ Data* Cache::read(int addr) {
                 Node *newnode = new Node;
                 newnode->pro = new Elem(addr, s_engine->a[j]->data, s_engine->a[j]->sync);
                 rp->DeleteHeap(i);
-                root = s_engine->Deletenode(root, rp->heap[i]->addr);     
+                
+                root = s_engine->Deletenode(root, s_engine->a[j]->addr);     
                 s_engine->a[j] = newnode->pro;
                 rp->Add(newnode->pro);  
                 root = s_engine->AddNode(addr, root, newnode);
+                
                 return newnode->pro->data;
             }
         }
+        
     return NULL;
 }
 
@@ -40,8 +50,8 @@ Elem* Cache::put(int addr, Data* cont) {
     if(count == 0){
         root->pro = new Elem(addr, cont, 1);
         s_engine->a[count] = root->pro;
-        rp->Add(s_engine->a[count]);  
-
+        rp->Add(root->pro);  
+        
     }
     else if(count == size){
         for(j = 0; j < count; j++){
@@ -66,23 +76,30 @@ Elem* Cache::put(int addr, Data* cont) {
         }
         else{
                 s_engine->a[count-1] = newnode->pro;
+                // cout << rp->heap[0]->data->getValue() <<"0 ";
         }
-       
+        
 
     return NULL;
 }
 Elem* Cache::write(int addr, Data* cont) {
-    cout <<0<<endl;
+    
     Node *root = s_engine->Foundingroot; 
     if(count == 0){
+        
         root->pro = new Elem(addr, cont, 0);
         s_engine->a[count] = root->pro;
         rp->Add(s_engine->a[count]);  
-
+        
     }
     else{
+        
         for(int i = 0; i < count; i++){
+            
             if(rp->heap[i]->addr == addr){
+                //for(int m = 0; m < count; m++){
+                    cout << rp->heap[0]->data->getValue() <<" ";
+                //}
                 rp->ch[i] += 1;   
                 int j;
                 for(j = 0; j < count; j++){
@@ -90,13 +107,16 @@ Elem* Cache::write(int addr, Data* cont) {
                         break;
                     }
                 }
+                
                 rp->DeleteHeap(i);
-                root = s_engine->Deletenode(root, rp->heap[i]->addr);
+                
+                root = s_engine->Deletenode(root, s_engine->a[j]->addr);
                 Node *newnode = new Node;
                 newnode->pro = new Elem(addr, cont, 0);
                 s_engine->a[j] = newnode->pro;
                 rp->Add(newnode->pro);  
                 root = s_engine->AddNode(addr, root, newnode);
+                
                 return NULL;
             }
         }
