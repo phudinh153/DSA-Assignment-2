@@ -2,7 +2,8 @@
 #define CACHE_H
 
 #include "main.h"
-
+int size = MAXSIZE;
+int count = 0;
 class Node{
     public:
         Node *left, *right;
@@ -15,23 +16,26 @@ class Node{
 
 class ReplacementPolicy {
     public:
-    int ch[5] ={0, 0, 0, 0, 0};    //count for heap
-
+    
+    int *ch = new int[size];    //count for heap
+    Elem **heap = new Elem*[size];
     virtual ~ReplacementPolicy() = default;
-
-
+    virtual void DeleteHeap(int pos) = 0;
+    virtual void Add(Elem *d) = 0;
 
 };
 
 class SearchEngine {
     public:
-    int count = 0;
-    Elem** a = new Elem*[5];
+    
+    Elem** a = new Elem*[size];
     Node *Foundingroot = new Node;
 	virtual ~SearchEngine() = default;
     virtual Node *SearchNode(int ad, Node *root) = 0;
     virtual Node *AddNode(int ad, Node *root, Node *newnode) = 0;
     virtual Node *Deletenode(Node *root, int key) = 0;
+    virtual void PrintInOrder() = 0;
+    virtual void PrintPreOrder() = 0;
 };
 
 class MFU : public ReplacementPolicy {
@@ -41,6 +45,75 @@ class MFU : public ReplacementPolicy {
 class LFU : public ReplacementPolicy {
     public:
 
+void ReHeapup(int pos){
+    int posParent = (pos - 1) / 2;
+    //cout << "posParent: " << posParent<<endl;
+    //cout << "ch: "<<ch[posParent]<<endl;
+    while(ch[pos] < ch[posParent] && posParent >= 0){
+        swap(heap[pos], heap[posParent]);
+        swap(ch[pos], ch[posParent]);
+        //if((pos - 1) / 2 >= 0){
+            pos = posParent;
+            posParent = (pos - 1) / 2;
+        //}
+    }
+}
+
+void ReHeapdown(int pos){
+    int posCL = 2*pos + 1;
+    int posCR = 2*pos + 2;
+    
+    while(posCL < count || posCR < count){
+        if(posCL < count && posCR < count){
+            if(ch[posCL] <= ch[posCR] && ch[pos] >= ch[posCL]){
+                swap(heap[pos], heap[posCL]);
+                swap(ch[pos], ch[posCL]);
+                pos = posCL;
+            }
+            else if(ch[posCL] > ch[posCR] && ch[pos] >= ch[posCR]){
+                swap(heap[pos], heap[posCR]);
+                swap(ch[pos], ch[posCR]);
+                pos = posCR;
+            }
+            else{
+                break;
+            }
+        } 
+        else if(posCL >= count && ch[pos] >= ch[posCR]){
+            swap(heap[pos], heap[posCR]);
+            swap(ch[pos], ch[posCR]);
+            pos = posCR;
+        } 
+        else if(posCR >= count && ch[pos] >= ch[posCL]){
+            swap(heap[pos], heap[posCL]);
+            swap(ch[pos], ch[posCL]);
+            pos = posCL;
+        }
+        else{
+            break;
+        }
+        posCL = 2*pos + 1;
+        posCR = 2*pos + 2;
+    }
+}
+
+void DeleteHeap(int pos){
+    swap(heap[pos], heap[count-1]);
+    swap(ch[pos], ch[count-1]);
+    count--;
+    ReHeapdown(pos);
+    
+    for(int i = 0; i < count; i++){
+        ReHeapup(i);
+    }
+}
+
+void Add(Elem *d){
+    heap[count] = d;
+    ReHeapup(count);
+    count++;
+       
+}
 
 };
 class MFRU: public ReplacementPolicy {
@@ -56,9 +129,9 @@ class BST : public SearchEngine {
     ~BST(){
         delete[] a;
     }
-    void PrintInOrder(Node *root){
+    void PrintInOrder(){
         cout <<"Print BST in inorder:"<<endl;
-        inOrder(root);
+        inOrder(this->Foundingroot);
     }
     void inOrder(Node *root){
         if(root){
@@ -68,9 +141,9 @@ class BST : public SearchEngine {
         }
     }
 
-    void PrintPreOrder(Node *root){
+    void PrintPreOrder(){
         cout <<"Print BST in preorder:"<<endl;
-        preOrder(root);
+        preOrder(this->Foundingroot);
     }
     void preOrder(Node *root){
         if(root){
