@@ -80,7 +80,7 @@ Elem* Cache::put(int addr, Data* cont) {
         Node *newnode = new Node;
         newnode->pro = new Elem(addr, cont, 1);
         root = s_engine->AddNode(addr, root, newnode);
-        
+        rp->ch[count] = 0;
         rp->Add(newnode->pro);  
         if(del){
                 s_engine->a[j] = newnode->pro;
@@ -152,6 +152,7 @@ Elem* Cache::write(int addr, Data* cont) {
             Node *newnode = new Node;
             newnode->pro = new Elem(addr, cont, 0);
             root = s_engine->AddNode(addr, root, newnode);
+            rp->ch[count] = 0;
             rp->Add(newnode->pro);  
             if(del){
                 s_engine->a[j] = newnode->pro;
