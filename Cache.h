@@ -35,8 +35,8 @@ class SearchEngine {
     virtual Node *SearchNode(int ad, Node *root) = 0;
     virtual Node *AddNode(int ad, Node *root, Node *newnode) = 0;
     virtual Node *Deletenode(Node *root, int key) = 0;
-    virtual void PrintInOrder() = 0;
-    virtual void PrintPreOrder() = 0;
+    virtual void InOrder(Node *root) = 0;
+    virtual void PreOrder(Node *root) = 0;
 };
 
 class MFU : public ReplacementPolicy {
@@ -140,25 +140,25 @@ class BST : public SearchEngine {
     }
     void PrintInOrder(){
         cout <<"Print BST in inorder:"<<endl;
-        inOrder(this->Foundingroot);
+        InOrder(this->Foundingroot);
     }
-    void inOrder(Node *root){
-        if(root){
-            inOrder(root->left);
+    void InOrder(Node *root){
+        if(root != nullptr){
+            InOrder(root->left);
             root->pro->print();
-		    inOrder(root->right);
+		    InOrder(root->right);
         }
     }
 
     void PrintPreOrder(){
         cout <<"Print BST in preorder:"<<endl;
-        preOrder(this->Foundingroot);
+        PreOrder(this->Foundingroot);
     }
-    void preOrder(Node *root){
-        if(root){
-            preOrder(root->left);
+    void PreOrder(Node *root){
+        if(root != nullptr){
+            PreOrder(root->left);
             root->pro->print();
-		    preOrder(root->right);
+		    PreOrder(root->right);
         }
     }
 
@@ -201,14 +201,17 @@ class BST : public SearchEngine {
         }
         else if(root->left == nullptr){
             Node *p = root;
+            
             root = root->right;
+            //delete p->pro;
             delete p;
             p = nullptr;
-    
+            
         }
         else if(root->right == nullptr){
             Node *p = root;
             root = root->left;
+            
             delete p;
             p = nullptr;
     

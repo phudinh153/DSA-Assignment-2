@@ -11,13 +11,7 @@ Data* Cache::read(int addr) {
     for(int i = 0; i < count; i++){
             if(rp->heap[i]->addr == addr){
                 rp->ch[i] += 1;   
-                for(int m = 0; m < count; m++){
-                    cout<<m<<" " << rp->heap[m]->data->getValue() <<" ";
-                }
-                cout <<endl;
-                for(int k = 0; k < count; k++){
-                    cout<<k<<" " << rp->ch[k] <<" ";
-                }
+                
                 int j;
                 for(j = 0; j < count; j++){
                     if(s_engine->a[j]->addr == addr){
@@ -29,10 +23,19 @@ Data* Cache::read(int addr) {
                 rp->DeleteHeap(i);
                 
                 root = s_engine->Deletenode(root, s_engine->a[j]->addr);     
+                s_engine->Foundingroot = root;
+ 
                 s_engine->a[j] = newnode->pro;
                 rp->Add(newnode->pro);  
                 root = s_engine->AddNode(addr, root, newnode);
                 
+                // for(int m = 0; m < count; m++){
+                //     cout<<m<<" " << rp->heap[m]->data->getValue() <<" ";
+                // }
+                // cout <<endl;
+                // for(int k = 0; k < count; k++){
+                //     cout<<k<<" " << rp->ch[k] <<" ";
+                // }
                 return newnode->pro->data;
             }
         }
@@ -51,7 +54,7 @@ Elem* Cache::put(int addr, Data* cont) {
         root->pro = new Elem(addr, cont, 1);
         s_engine->a[count] = root->pro;
         rp->Add(root->pro);  
-        
+        return NULL;
     }
     else if(count == size){
         for(j = 0; j < count; j++){
@@ -62,13 +65,22 @@ Elem* Cache::put(int addr, Data* cont) {
                     }
                 }
         root = s_engine->Deletenode(root, rp->heap[0]->addr);
+        s_engine->Foundingroot = root;
         rp->DeleteHeap(0);
 
     }
-    
+        // for(int m = 0; m < count; m++){
+        //             cout<<m<<" " << rp->heap[m]->data->getValue() <<" ";
+        //         }
+        //         cout <<endl;
+        //         for(int k = 0; k < count; k++){
+        //             cout<<k<<" " << rp->ch[k] <<" ";
+        //         }
+        //         cout <<endl;
         Node *newnode = new Node;
         newnode->pro = new Elem(addr, cont, 1);
         root = s_engine->AddNode(addr, root, newnode);
+        
         rp->Add(newnode->pro);  
         if(del){
                 s_engine->a[j] = newnode->pro;
@@ -90,16 +102,14 @@ Elem* Cache::write(int addr, Data* cont) {
         root->pro = new Elem(addr, cont, 0);
         s_engine->a[count] = root->pro;
         rp->Add(s_engine->a[count]);  
-        
+        return NULL;
     }
     else{
         
         for(int i = 0; i < count; i++){
             
             if(rp->heap[i]->addr == addr){
-                //for(int m = 0; m < count; m++){
-                    cout << rp->heap[0]->data->getValue() <<" ";
-                //}
+                
                 rp->ch[i] += 1;   
                 int j;
                 for(j = 0; j < count; j++){
@@ -111,6 +121,7 @@ Elem* Cache::write(int addr, Data* cont) {
                 rp->DeleteHeap(i);
                 
                 root = s_engine->Deletenode(root, s_engine->a[j]->addr);
+                s_engine->Foundingroot = root;
                 Node *newnode = new Node;
                 newnode->pro = new Elem(addr, cont, 0);
                 s_engine->a[j] = newnode->pro;
@@ -154,15 +165,21 @@ Elem* Cache::write(int addr, Data* cont) {
     return NULL;
 }
 void Cache::printRP() {
-    cout <<"Print replacement/n";
-    for(int i = 0; i < size; i++ ){
-        cout << rp->heap[i]<<endl;
+    for(int i = 0; i < count; i++ ){
+        rp->heap[i]->print();
     }
 }
 void Cache::printSE() {
-    cout <<"Print search buffer/n";
-    s_engine->PrintInOrder();
-    s_engine->PrintPreOrder();
+    // s_engine->Foundingroot->pro->print();
+    Node *root = s_engine->Foundingroot;
+   
+    cout <<"Print BST in inorder:"<<endl;
+    s_engine->InOrder(s_engine->Foundingroot);
+    cout <<"Print BST in preorder:"<<endl;
+    s_engine->PreOrder(s_engine->Foundingroot);
+    
 }
+
 void Cache::printLP() {
+    //cout << 1;
 }
