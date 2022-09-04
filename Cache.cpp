@@ -10,6 +10,7 @@ Data* Cache::read(int addr) {
     Node *root = s_engine->Foundingroot;
     for(int i = 0; i < count; i++){
             if(rp->heap[i]->addr == addr){
+                // if(rp->heap[i]->)
                 rp->ch[i] += 1;   
                 
                 int j;
@@ -18,16 +19,16 @@ Data* Cache::read(int addr) {
                         break;
                     }
                 }
-                Node *newnode = new Node;
-                newnode->pro = new Elem(addr, s_engine->a[j]->data, s_engine->a[j]->sync);
+                Node *newnode = s_engine->SearchNode(s_engine->a[j]->addr, root);
+                //newnode->pro = new Elem(addr, s_engine->a[j]->data, s_engine->a[j]->sync);
                 rp->DeleteHeap(i);
                 
-                root = s_engine->Deletenode(root, s_engine->a[j]->addr);     
-                s_engine->Foundingroot = root;
+                //root = s_engine->Deletenode(root, s_engine->a[j]->addr);     
+                //s_engine->Foundingroot = root;
  
                 s_engine->a[j] = newnode->pro;
                 rp->Add(newnode->pro);  
-                root = s_engine->AddNode(addr, root, newnode);
+                //root = s_engine->AddNode(addr, root, newnode);
                 
                 // for(int m = 0; m < count; m++){
                 //     cout<<m<<" " << rp->heap[m]->data->getValue() <<" ";
@@ -120,13 +121,16 @@ Elem* Cache::write(int addr, Data* cont) {
                 
                 rp->DeleteHeap(i);
                 
-                root = s_engine->Deletenode(root, s_engine->a[j]->addr);
-                s_engine->Foundingroot = root;
-                Node *newnode = new Node;
-                newnode->pro = new Elem(addr, cont, 0);
+                //root = s_engine->Deletenode(root, s_engine->a[j]->addr);
+                //s_engine->Foundingroot = root;
+                Node *newnode = s_engine->SearchNode(s_engine->a[j]->addr, root);
+                newnode->pro->data = cont;
+                newnode->pro->sync = 0;
+                
                 s_engine->a[j] = newnode->pro;
+                //s_engine->a[j]->print();
                 rp->Add(newnode->pro);  
-                root = s_engine->AddNode(addr, root, newnode);
+                //root = s_engine->AddNode(addr, root, newnode);
                 return NULL;
             }
         }
@@ -146,7 +150,7 @@ Elem* Cache::write(int addr, Data* cont) {
                 }
                 //cout << 1 <<endl;
             root = s_engine->Deletenode(root, rp->heap[rp->Position(0)]->addr);
-            
+            s_engine->Foundingroot = root;
             rp->DeleteHeap(0);
 
         }

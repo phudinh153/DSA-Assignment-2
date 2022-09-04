@@ -256,6 +256,11 @@ void printHeap(){
                     swap(ch[j], ch[j + 1]);
                 }
             }
+            else if(ch[j] < ch[j + 1]){
+                swap(ru[j], ru[j + 1]);
+                swap(heap[j], heap[j + 1]);
+                swap(ch[j], ch[j + 1]);
+            }
         }
     }
 
@@ -370,7 +375,149 @@ void Add(Elem *d){
 };
 
 class LFRU: public ReplacementPolicy {
-    //TODO
+    public:
+    int *ru = new int[size];
+    LFRU(){
+        for(int i = 0; i < size; i++){
+            ch[i] = 0;
+        }
+        for(int i = 0; i < size; i++){
+            ru[i] = 0;
+        }
+    }
+    ~LFRU(){
+        delete[] heap;
+        delete ch;    
+        delete ru;
+    }
+
+void printHeap(){
+    
+    for (int i = 0; i < count - 1; i++){
+        for(int j = 0; j < count - i - 1; j++){
+            if(ch[j] == ch[j + 1]){
+                if(ru[j] > ru[j + 1]){
+                    swap(ru[j], ru[j + 1]);
+                    swap(heap[j], heap[j + 1]);
+                    swap(ch[j], ch[j + 1]);
+                }
+            }
+            else if(ch[j] > ch[j + 1]){
+                swap(ru[j], ru[j + 1]);
+                swap(heap[j], heap[j + 1]);
+                swap(ch[j], ch[j + 1]);
+            }
+        }
+    }
+
+    for(int i = 0; i < count; i++){
+        heap[i]->print();
+    }
+    
+}
+
+void ReHeapup(int pos){
+    int posParent = (pos - 1) / 2;
+    //cout << "posParent: " << posParent<<endl;
+    //cout << "ch: "<<ch[posParent]<<endl;
+    while(ch[pos] < ch[posParent] && posParent >= 0){
+        swap(heap[pos], heap[posParent]);
+        swap(ch[pos], ch[posParent]);
+        swap(ru[pos], ru[posParent]);
+        //if((pos - 1) / 2 >= 0){
+            pos = posParent;
+            posParent = (pos - 1) / 2;
+        //}
+    }
+}
+
+void ReHeapdown(int pos){
+    int posCL = 2*pos + 1;
+    int posCR = 2*pos + 2;
+    
+    while(posCL < count || posCR < count){
+        if(posCL < count && posCR < count){
+            if(ch[posCL] <= ch[posCR] && ch[pos] >= ch[posCL]){
+                swap(heap[pos], heap[posCL]);
+                swap(ch[pos], ch[posCL]);
+                swap(ru[pos], ru[posCL]);
+                pos = posCL;
+            }
+            else if(ch[posCL] > ch[posCR] && ch[pos] >= ch[posCR]){
+                swap(heap[pos], heap[posCR]);
+                swap(ch[pos], ch[posCR]);
+                swap(ru[pos], ru[posCR]);
+                pos = posCR;
+            }
+            else{
+                break;
+            }
+        } 
+        // else if(posCL >= count && ch[pos] >= ch[posCR]){
+        //     swap(a[pos], a[posCR]);
+        //     swap(ch[pos], ch[posCR]);
+        //     pos = posCR;
+        // } 
+        else if(posCR >= count && ch[pos] >= ch[posCL]){
+            swap(heap[pos], heap[posCL]);
+            swap(ch[pos], ch[posCL]);
+            swap(ru[pos], ru[posCL]);
+            pos = posCL;
+        }
+        else{
+            break;
+        }
+        posCL = 2*pos + 1;
+        posCR = 2*pos + 2;
+    }
+}
+
+int Position(int pos){
+    int cdel = ch[0];
+    int rdel = ru[0];
+    for(int i = 0; i < count; i++){
+        if(ch[i] < cdel){
+            cdel = ch[i];
+            rdel = ru[i];
+        }
+    }
+    for(int i = 0; i < count; i++){
+        if(ru[i] < rdel && ch[i] == cdel){
+            pos = i;
+        }
+    }
+    return pos;
+}
+
+void DeleteHeap(int pos){
+    pos = Position(pos);
+    swap(heap[pos], heap[count-1]);
+    swap(ch[pos], ch[count-1]);
+    swap(ru[pos], ru[count-1]);
+    count--;
+    int i = 0;
+    ReHeapdown(pos);
+    
+    for(int i = 0; i < count; i++){
+        ReHeapup(i);
+    }
+}
+
+void Add(Elem *d){
+    heap[count] = d;
+    
+    int max = 0;
+    for(int i = 0; i < count; i++){
+        if(ru[i] >= max){
+            max = ru[i];
+        }
+    }
+    ru[count] = max + 1;
+    ReHeapup(count);
+    count++;
+       
+}
+
 };
 
 class BST : public SearchEngine {
