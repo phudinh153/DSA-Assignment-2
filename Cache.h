@@ -2,7 +2,7 @@
 #define CACHE_H
 
 #include "main.h"
-int size = MAXSIZE;
+
 int count = 0;
 class Node{
     public:
@@ -16,7 +16,7 @@ class Node{
 
 class ReplacementPolicy {
     public:
-    
+    int size = MAXSIZE;
     int *ch = new int[size];    //count for heap
     
     Elem **heap = new Elem*[size];
@@ -29,7 +29,7 @@ class ReplacementPolicy {
 
 class SearchEngine {
     public:
-    
+    int size = MAXSIZE;
     Elem** a = new Elem*[size];
     Node *Foundingroot = new Node;
 	virtual ~SearchEngine() = default;
@@ -47,6 +47,7 @@ class MFU : public ReplacementPolicy {
         for(int i = 0; i < size; i++){
         ch[i] = 0;
     }
+    //cout <<MAXSIZE<<endl;
     }
     ~MFU(){
         delete[] heap;

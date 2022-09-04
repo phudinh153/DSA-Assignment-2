@@ -1,5 +1,9 @@
 #include "main.h"
-Cache::Cache(SearchEngine* s,ReplacementPolicy* r):rp(r),s_engine(s) {}
+Cache::Cache(SearchEngine* s,ReplacementPolicy* r):rp(r),s_engine(s) {
+    delete s;
+    s = new BST();
+    rp = r;
+}
 Cache::~Cache(){
 	delete rp;
 	delete s_engine;
@@ -57,7 +61,7 @@ Elem* Cache::put(int addr, Data* cont) {
         rp->Add(root->pro);  
         return NULL;
     }
-    else if(count == size){
+    else if(count == rp->size){
         for(j = 0; j < count; j++){
                     if(s_engine->a[j]->addr == rp->heap[rp->Position(0)]->addr){
                         del = 1;
@@ -138,7 +142,7 @@ Elem* Cache::write(int addr, Data* cont) {
         int j;
         bool del = 0;
         Elem *delNode;
-        if(count == size){
+        if(count == rp->size){
             //s_engine->Deletenode(root, a[])
             
                 for(j = 0; j < count; j++){
