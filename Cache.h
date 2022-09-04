@@ -47,7 +47,7 @@ class MFU : public ReplacementPolicy {
         for(int i = 0; i < size; i++){
         ch[i] = 0;
     }
-    //cout <<MAXSIZE<<endl;
+    //cout <<size<<endl;
     }
     ~MFU(){
         delete[] heap;
@@ -59,6 +59,7 @@ int Position(int pos){
 }
 
 void printHeap(){
+    cout <<size<<endl;
     for(int i = count - 1; i >= 0; i--){
         heap[i]->print();
     }

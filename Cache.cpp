@@ -11,6 +11,9 @@ Cache::~Cache(){
 
 
 Data* Cache::read(int addr) {
+    if(rp->size == 0){
+        return NULL;
+    }
     Node *root = s_engine->Foundingroot;
     for(int i = 0; i < count; i++){
             if(rp->heap[i]->addr == addr){
@@ -50,7 +53,9 @@ Data* Cache::read(int addr) {
 
 
 Elem* Cache::put(int addr, Data* cont) {
-    
+    if(rp->size == 0){
+        return NULL;
+    }
     Node *root = s_engine->Foundingroot;    
     Elem *delNode;
     int j;
@@ -100,7 +105,9 @@ Elem* Cache::put(int addr, Data* cont) {
     return NULL;
 }
 Elem* Cache::write(int addr, Data* cont) {
-    
+    if(rp->size == 0){
+        return NULL;
+    }
     Node *root = s_engine->Foundingroot; 
     if(count == 0){
         
@@ -179,6 +186,9 @@ void Cache::printRP() {
     rp->printHeap();
 }
 void Cache::printSE() {
+    if(rp->size == 0){
+        return;
+    }
     // s_engine->Foundingroot->pro->print();
     Node *root = s_engine->Foundingroot;
    
@@ -198,6 +208,7 @@ void Cache::printLP() {
         s_engine->a[i]->print();
     }
     cout <<"Hash table memory"<<endl;
+    
     Elem **Hash = new Elem*[count];
     int i = 0; //Hash count
     int key;
