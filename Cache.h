@@ -23,7 +23,7 @@ class ReplacementPolicy {
     virtual ~ReplacementPolicy() = default;
     virtual void DeleteHeap(int pos) = 0;
     virtual void Add(Elem *d) = 0;
-
+    virtual void printHeap() = 0;
 };
 
 class SearchEngine {
@@ -37,6 +37,7 @@ class SearchEngine {
     virtual Node *Deletenode(Node *root, int key) = 0;
     virtual void InOrder(Node *root) = 0;
     virtual void PreOrder(Node *root) = 0;
+    
 };
 
 class MFU : public ReplacementPolicy {
@@ -54,6 +55,12 @@ class LFU : public ReplacementPolicy {
         delete[] heap;
         delete ch;    
     }
+void printHeap(){
+    for(int i = 0; i < count; i++ ){
+        heap[i]->print();
+    }
+}
+
 void ReHeapup(int pos){
     int posParent = (pos - 1) / 2;
     //cout << "posParent: " << posParent<<endl;

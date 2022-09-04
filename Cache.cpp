@@ -165,9 +165,7 @@ Elem* Cache::write(int addr, Data* cont) {
     return NULL;
 }
 void Cache::printRP() {
-    for(int i = 0; i < count; i++ ){
-        rp->heap[i]->print();
-    }
+    rp->printHeap();
 }
 void Cache::printSE() {
     // s_engine->Foundingroot->pro->print();
@@ -179,7 +177,45 @@ void Cache::printSE() {
     s_engine->PreOrder(s_engine->Foundingroot);
     
 }
+int HashKey(int d){
+    return d%count;
+}
 
 void Cache::printLP() {
-    //cout << 1;
+    cout <<"Prime memory"<<endl;
+    for(int i = 0; i < count; i++ ){
+        s_engine->a[i]->print();
+    }
+    cout <<"Hash table memory"<<endl;
+    Elem **Hash = new Elem*[count];
+    int i = 0; //Hash count
+    int key;
+    for(int m = 0; m < count; m++){
+        Hash[m] = nullptr;
+    }
+    while(i < count){
+        key = HashKey(s_engine->a[i]->addr);
+        bool hashed = 0;
+        while(!hashed){
+            if(!Hash[key]){
+                Hash[key] = s_engine->a[i];
+                hashed = 1;
+                break;
+            }
+            else{
+                if(key + 1 == count){
+                    key = 0;
+                }
+                else{
+                    key++;
+                }
+            }
+        }
+        i++;
+
+    }
+    for(int i = 0; i < count; i++ ){
+        Hash[i]->print();
+    }
+    delete[] Hash;
 }
