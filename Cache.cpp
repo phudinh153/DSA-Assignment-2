@@ -58,13 +58,13 @@ Elem* Cache::put(int addr, Data* cont) {
     }
     else if(count == size){
         for(j = 0; j < count; j++){
-                    if(s_engine->a[j]->addr == rp->heap[0]->addr){
+                    if(s_engine->a[j]->addr == rp->heap[rp->Position(0)]->addr){
                         del = 1;
                         delNode = s_engine->a[j];
                         break;
                     }
                 }
-        root = s_engine->Deletenode(root, rp->heap[0]->addr);
+        root = s_engine->Deletenode(root, rp->heap[rp->Position(0)]->addr);
         s_engine->Foundingroot = root;
         rp->DeleteHeap(0);
 
@@ -127,10 +127,10 @@ Elem* Cache::write(int addr, Data* cont) {
                 s_engine->a[j] = newnode->pro;
                 rp->Add(newnode->pro);  
                 root = s_engine->AddNode(addr, root, newnode);
-                
                 return NULL;
             }
         }
+        
         int j;
         bool del = 0;
         Elem *delNode;
@@ -138,14 +138,15 @@ Elem* Cache::write(int addr, Data* cont) {
             //s_engine->Deletenode(root, a[])
             
                 for(j = 0; j < count; j++){
-                    if(s_engine->a[j]->addr == rp->heap[0]->addr){
+                    if(s_engine->a[j]->addr == rp->heap[rp->Position(0)]->addr){
                         del = 1;
                         delNode = s_engine->a[j];
                         break;
                     }
                 }
-            root = s_engine->Deletenode(root, rp->heap[0]->addr);
-
+                //cout << 1 <<endl;
+            root = s_engine->Deletenode(root, rp->heap[rp->Position(0)]->addr);
+            
             rp->DeleteHeap(0);
 
         }
@@ -161,6 +162,7 @@ Elem* Cache::write(int addr, Data* cont) {
             else{
                 s_engine->a[count-1] = newnode->pro;
             }
+            
 
     }
     return NULL;

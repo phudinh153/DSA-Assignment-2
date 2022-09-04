@@ -24,6 +24,7 @@ class ReplacementPolicy {
     virtual void DeleteHeap(int pos) = 0;
     virtual void Add(Elem *d) = 0;
     virtual void printHeap() = 0;
+    virtual int Position(int pos) = 0;
 };
 
 class SearchEngine {
@@ -51,6 +52,11 @@ class MFU : public ReplacementPolicy {
         delete[] heap;
         delete ch;    
     }
+
+int Position(int pos){
+    return pos;
+}
+
 void printHeap(){
     for(int i = count - 1; i >= 0; i--){
         heap[i]->print();
@@ -140,6 +146,11 @@ class LFU : public ReplacementPolicy {
         delete[] heap;
         delete ch;    
     }
+
+int Position(int pos){
+    return pos;
+}
+
 void printHeap(){
     for(int i = 0; i < count; i++ ){
         heap[i]->print();
@@ -235,6 +246,7 @@ class MFRU: public ReplacementPolicy {
     }
 
 void printHeap(){
+    
     for (int i = 0; i < count - 1; i++){
         for(int j = 0; j < count - i - 1; j++){
             if(ch[j] == ch[j + 1]){
@@ -309,7 +321,7 @@ void ReHeapdown(int pos){
     }
 }
 
-void DeleteHeap(int pos){
+int Position(int pos){
     int cdel = ch[0];
     int rdel = ru[0];
     for(int i = 0; i < count; i++){
@@ -323,7 +335,11 @@ void DeleteHeap(int pos){
             pos = i;
         }
     }
-    
+    return pos;
+}
+
+void DeleteHeap(int pos){
+    pos = Position(pos);
     swap(heap[pos], heap[count-1]);
     swap(ch[pos], ch[count-1]);
     swap(ru[pos], ru[count-1]);
